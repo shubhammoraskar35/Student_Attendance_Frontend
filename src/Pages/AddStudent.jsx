@@ -32,7 +32,9 @@ function AddStudent() {
     
     const handleSubmit =async (e)=>{
         try {
-            const responce =await axios.post("http://localhost:8080/student/create-student",Student);
+            // const responce =await axios.post("http://localhost:8080/student/create-student",Student);
+            const responce =await axios.post("https://student-attendance-4ax6.onrender.com/student/create-student",Student);
+
             console.log(responce.data);
             // setStudent(responce.data);
             alert("Student Added Successfully ");

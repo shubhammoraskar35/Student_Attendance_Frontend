@@ -17,7 +17,9 @@ function Students() {
     const fetchTotalStudent =async ()=>{
         try {
 
-            const responce=await axios.get("http://localhost:8080/student/get-total-student");
+            // const responce=await axios.get("http://localhost:8080/student/get-total-student");
+            const responce=await axios.get("https://student-attendance-4ax6.onrender.com/student/get-total-student");
+
             console.log(responce.data);
             setTotalStudent(responce.data);
 
@@ -31,8 +33,10 @@ function Students() {
 
     const fetchAllStudents =async ()=>{
         try {
-                const responce=await axios.get("http://localhost:8080/student/get-all-student");
-                console.log(responce.data);
+                // const responce=await axios.get("http://localhost:8080/student/get-all-student");
+            const responce=await axios.get("https://student-attendance-4ax6.onrender.com/student/get-all-student");
+
+            console.log(responce.data);
                 setGetStudent(responce.data);
         }catch (e) {
             console.log("Something Wents Wrong ")

@@ -25,8 +25,11 @@ function Attendance() {
 
     const fetchAllStudents = async () => {
         try {
+            // const response = await axios.get(
+            //     "http://localhost:8080/student/get-all-student"
+            // );
             const response = await axios.get(
-                "http://localhost:8080/student/get-all-student"
+                "https://student-attendance-4ax6.onrender.com/student/get-all-student"
             );
 
             const updatedStudents = response.data.map(student => ({
@@ -76,8 +79,12 @@ function Attendance() {
 
             }));
 
+            // await axios.post(
+            //     "http://localhost:8080/attendance/save-all-attendance",
+            //     attendanceData
+            // );
             await axios.post(
-                "http://localhost:8080/attendance/save-all-attendance",
+                "https://student-attendance-4ax6.onrender.com/attendance/save-all-attendance",
                 attendanceData
             );
 

@@ -39,11 +39,14 @@ function Login() {
 
         try {
 
+            // const response = await axios.post(
+            //     "http://localhost:8080/login/login",
+            //     loginData
+            // );
             const response = await axios.post(
-                "http://localhost:8080/login/login",
+                "https://student-attendance-4ax6.onrender.com/login/login",
                 loginData
             );
-
             console.log(response.data);
 
             alert("Login Successful");

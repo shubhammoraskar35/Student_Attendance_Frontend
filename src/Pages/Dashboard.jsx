@@ -19,16 +19,22 @@ function Dashboard() {
 
     const fetchAllCounts =async ()=>{
         try {
-            const totalStudent = await axios.get("http://localhost:8080/student/get-total-student");
+            // const totalStudent = await axios.get("http://localhost:8080/student/get-total-student");
+            const totalStudent = await axios.get("https://student-attendance-4ax6.onrender.com/student/get-total-student");
+
             console.log(totalStudent.data);
             setTotalStudent(totalStudent.data);
 
 
-            const presentStudent=await axios.get("http://localhost:8080/attendance/get-present-attendance");
+            // const presentStudent=await axios.get("http://localhost:8080/attendance/get-present-attendance");
+            const presentStudent=await axios.get("https://student-attendance-4ax6.onrender.com/attendance/get-present-attendance");
+
             console.log(presentStudent.data);
             setTodayPresentStudent(presentStudent.data);
 
-            const absentStudent=await axios.get("http://localhost:8080/attendance/get-absent-attendance");
+            // const absentStudent=await axios.get("http://localhost:8080/attendance/get-absent-attendance");
+            const absentStudent=await axios.get("https://student-attendance-4ax6.onrender.com/attendance/get-absent-attendance");
+
             console.log(absentStudent.data);
             setTodayAbsentStudent(absentStudent.data);
 
