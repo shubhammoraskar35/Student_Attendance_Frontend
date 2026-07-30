@@ -8,54 +8,70 @@ import {
     MoreVertical,
     Filter
 } from "lucide-react";
-import {useEffect, useState} from "react";
-import axios from "axios";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
 function Dashboard() {
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () =>
+            window.removeEventListener("resize", handleResize);
+
+    }, []);
     const [totalStudent, setTotalStudent] = useState(0);
     const [todayPresentStudent, setTodayPresentStudent] = useState(0);
     const [todayAbsentStudent, setTodayAbsentStudent] = useState(0);
+    const fetchAllCounts = async () => {
 
-    const fetchAllCounts =async ()=>{
         try {
-            // const totalStudent = await axios.get("http://localhost:8080/student/get-total-student");
-            const totalStudent = await axios.get("https://student-attendance-4ax6.onrender.com/student/get-total-student");
 
-            console.log(totalStudent.data);
+            const totalStudent = await axios.get(
+                "https://student-attendance-4ax6.onrender.com/student/get-total-student"
+            );
+
             setTotalStudent(totalStudent.data);
 
+            const presentStudent = await axios.get(
+                "https://student-attendance-4ax6.onrender.com/attendance/get-present-attendance"
+            );
 
-            // const presentStudent=await axios.get("http://localhost:8080/attendance/get-present-attendance");
-            const presentStudent=await axios.get("https://student-attendance-4ax6.onrender.com/attendance/get-present-attendance");
-
-            console.log(presentStudent.data);
             setTodayPresentStudent(presentStudent.data);
 
-            // const absentStudent=await axios.get("http://localhost:8080/attendance/get-absent-attendance");
-            const absentStudent=await axios.get("https://student-attendance-4ax6.onrender.com/attendance/get-absent-attendance");
+            const absentStudent = await axios.get(
+                "https://student-attendance-4ax6.onrender.com/attendance/get-absent-attendance"
+            );
 
-            console.log(absentStudent.data);
             setTodayAbsentStudent(absentStudent.data);
 
+        } catch (e) {
 
-        }catch (e){
-            console.log("Something Wents Wrong ");
+            console.log("Something Went Wrong");
+
         }
-    }
 
+    };
     useEffect(() => {
-            fetchAllCounts();
+
+        fetchAllCounts();
+
     }, []);
-
-
-
     const attendanceRate =
         totalStudent > 0
-            ? ((todayPresentStudent / totalStudent) * 100).toFixed(2)
+            ? (
+                (todayPresentStudent / totalStudent) * 100
+            ).toFixed(2)
             : 0;
-
     const cardData = [
+
         {
             title: "TOTAL STUDENTS",
             value: totalStudent,
@@ -63,6 +79,7 @@ function Dashboard() {
             extra: "+2.5%",
             extraColor: "#2563eb"
         },
+
         {
             title: "PRESENT TODAY",
             value: todayPresentStudent,
@@ -70,6 +87,7 @@ function Dashboard() {
             extra: "Live",
             extraColor: "#059669"
         },
+
         {
             title: "ABSENT TODAY",
             value: todayAbsentStudent,
@@ -77,6 +95,7 @@ function Dashboard() {
             extra: "-12%",
             extraColor: "#dc2626"
         },
+
         {
             title: "ATTENDANCE RATE",
             value: attendanceRate,
@@ -86,7 +105,6 @@ function Dashboard() {
         }
 
     ];
-
     const recentAttendance = [
         {
             name: "Jordan Smith",
@@ -121,70 +139,148 @@ function Dashboard() {
             initials: "EC"
         }
     ];
-
     return (
-        <div style={mainContainer}>
 
-            {/* HEADER */}
-            <div style={headerStyle}>
+        // <div style={mainContainer}>
+        <div
+            style={{
+                ...mainContainer,
+                marginLeft: isMobile ? "70px" : "260px",
+                width: isMobile
+                    ? "calc(100% - 70px)"
+                    : "calc(100% - 260px)",
+                padding: isMobile ? "15px" : "20px"
+            }}
+        >
+            {/* ================= HEADER ================= */}
+
+            <div
+                style={{
+                    ...headerStyle,
+                    flexDirection: isMobile ? "column" : "row",
+                    alignItems: isMobile ? "stretch" : "center"
+                }}
+            >
 
                 <input
                     type="text"
                     placeholder="Search records..."
-                    style={searchStyle}
+                    style={{
+                        ...searchStyle,
+                        width: isMobile ? "100%" : "350px"
+                    }}
                 />
 
-                <div style={headerRight}>
+                <div
+                    style={{
+                        ...headerRight,
+                        width: isMobile ? "100%" : "auto",
+                        justifyContent: isMobile
+                            ? "space-between"
+                            : "flex-end"
+                    }}
+                >
 
-                    <Bell size={22} color="#374151" />
+                    <Bell size={22} color="#374151"/>
 
-                    <Settings size={22} color="#374151" />
+                    <Settings size={22} color="#374151"/>
 
                     <div style={profileStyle}>
+
                         <img
                             src="https://i.pravatar.cc/100"
-                            alt="profile"
+                            alt=""
                             style={profileImg}
                         />
 
                         <div>
-                            <h4 style={{margin: 0,fontSize: "14px"}}>
+
+                            <h4
+                                style={{
+                                    margin:0,
+                                    fontSize:isMobile ? "13px":"14px"
+                                }}
+                            >
                                 Admin Profile
                             </h4>
 
-                            <p style={{
-                                margin: 0,
-                                fontSize: "12px",
-                                color: "#6b7280"
-                            }}>
+                            <p
+                                style={{
+                                    margin:0,
+                                    color:"#6b7280",
+                                    fontSize:"12px"
+                                }}
+                            >
                                 SUPER ADMIN
                             </p>
+
                         </div>
+
                     </div>
 
                 </div>
 
             </div>
+            <div
+                style={{
+                    marginBottom:"25px"
+                }}
+            >
 
-            {/* TITLE */}
-            <div style={{marginBottom: "25px"}}>
-
-                <h1 style={titleStyle}>
+                <h1
+                    style={{
+                        ...titleStyle,
+                        fontSize:isMobile ? "28px" : "38px"
+                    }}
+                >
                     Welcome back, Registrar
                 </h1>
 
-                <p style={subTitle}>
+                <p
+                    style={{
+                        ...subTitle,
+                        fontSize:isMobile ? "14px":"16px"
+                    }}
+                >
                     Here is what's happening in your school today.
                 </p>
 
             </div>
+            <div
 
-            {/* CARDS */}
-            <div style={cardContainer}>
+                style={{
+
+                    ...cardContainer,
+
+                    gridTemplateColumns:isMobile
+
+                        ? "1fr"
+
+                        : "repeat(auto-fit,minmax(240px,1fr))",
+
+                    gap:isMobile ? "15px":"20px"
+
+                }}
+
+            >
 
                 {
-                    cardData.map((item, index) => (
-                        <div key={index} style={cardStyle}>
+
+                    cardData.map((item,index)=>(
+
+                        <div
+
+                            key={index}
+
+                            style={{
+
+                                ...cardStyle,
+
+                                padding:isMobile ? "18px":"22px"
+
+                            }}
+
+                        >
 
                             <div style={cardTop}>
 
@@ -192,13 +288,23 @@ function Dashboard() {
                                     {item.icon}
                                 </div>
 
-                                <span style={{
-                                    fontSize: "14px",
-                                    fontWeight: "600",
-                                    color: item.extraColor
-                                }}>
-                                    {item.extra}
-                                </span>
+                                <span
+
+                                    style={{
+
+                                        fontSize:"14px",
+
+                                        fontWeight:"600",
+
+                                        color:item.extraColor
+
+                                    }}
+
+                                >
+
+{item.extra}
+
+</span>
 
                             </div>
 
@@ -206,123 +312,253 @@ function Dashboard() {
                                 {item.title}
                             </p>
 
-                            <h1 style={cardValue}>
+                            <h1
+
+                                style={{
+
+                                    ...cardValue,
+
+                                    fontSize:isMobile ? "30px":"40px"
+
+                                }}
+
+                            >
+
                                 {item.value}
+
                             </h1>
 
                         </div>
+
                     ))
+
                 }
 
             </div>
+            {/* ================= Attendance Chart ================= */}
 
-            {/* CHART + TOP PERFORMERS */}
-            <div style={middleContainer}>
+            <div
+                style={{
+                    ...chartCard,
+                    padding: isMobile ? "18px" : "25px"
+                }}
+            >
 
-                {/* ATTENDANCE TREND */}
-                <div style={chartCard}>
+                <div style={sectionHeader}>
 
-                    <div style={sectionHeader}>
-                        <h2 style={sectionTitle}>
-                            Attendance Trends
-                        </h2>
-
-                        <button style={smallButton}>
-                            Last 7 Days
-                        </button>
-                    </div>
-
-                    <div style={chartArea}>
-
-                        {[60,85,75,90,45,80,95].map((height,index)=>(
-                            <div key={index} style={barWrapper}>
-
-                                <div
-                                    style={{
-                                        ...barStyle,
-                                        height:`${height}%`
-                                    }}
-                                ></div>
-
-                                <span style={barLabel}>
-                                    {["MON","TUE","WED","THU","FRI","SAT","SUN"][index]}
-                                </span>
-
-                            </div>
-                        ))}
-
-                    </div>
-
-                </div>
-
-                {/* TOP PERFORMERS */}
-                <div style={performerCard}>
-
-                    <h2 style={sectionTitle}>
-                        Top Performers
+                    <h2
+                        style={{
+                            ...sectionTitle,
+                            fontSize: isMobile ? "22px" : "28px"
+                        }}
+                    >
+                        Attendance Trends
                     </h2>
 
-                    {
-                        [
-                            {name:"Class 10-A",percent:"98%"},
-                            {name:"Class 08-C",percent:"94%"},
-                            {name:"Class 12-B",percent:"91%"}
-                        ].map((item,index)=>(
-                            <div key={index} style={{marginBottom:"25px"}}>
-
-                                <div style={performerTop}>
-                                    <div style={circleAvatar}>
-                                        {String.fromCharCode(65 + index)}
-                                    </div>
-
-                                    <div style={{flex:1}}>
-                                        <div style={performerRow}>
-                                            <span>{item.name}</span>
-                                            <span>{item.percent}</span>
-                                        </div>
-
-                                        <div style={progressBg}>
-                                            <div
-                                                style={{
-                                                    ...progressFill,
-                                                    width:item.percent
-                                                }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        ))
-                    }
-
-                    <button style={viewButton}>
-                        View All Classes
+                    <button
+                        style={{
+                            ...smallButton,
+                            fontSize: isMobile ? "12px" : "14px",
+                            padding: isMobile ? "6px 10px" : "8px 14px"
+                        }}
+                    >
+                        Last 7 Days
                     </button>
 
                 </div>
 
+                <div
+                    style={{
+                        ...chartArea,
+                        height: isMobile ? "220px" : "300px",
+                        padding: isMobile ? "12px" : "20px",
+                        gap: isMobile ? "8px" : "14px"
+                    }}
+                >
+
+                    {[60,85,75,90,45,80,95].map((height,index)=>(
+
+                        <div
+                            key={index}
+                            style={barWrapper}
+                        >
+
+                            <div
+                                style={{
+                                    ...barStyle,
+                                    height:`${height}%`,
+                                    maxWidth:isMobile ? "22px" : "40px"
+                                }}
+                            />
+
+                            <span
+                                style={{
+                                    ...barLabel,
+                                    fontSize:isMobile ? "10px" : "13px"
+                                }}
+                            >
+                    {["MON","TUE","WED","THU","FRI","SAT","SUN"][index]}
+                </span>
+
+                        </div>
+
+                    ))}
+
+                </div>
+
             </div>
+            {/* ================= Top Performers ================= */}
 
-            {/* RECENT ATTENDANCE */}
-            <div style={tableCard}>
+            <div
+                style={{
+                    ...performerCard,
+                    padding:isMobile ? "18px" : "25px"
+                }}
+            >
 
-                <div style={sectionHeader}>
+                <h2
+                    style={{
+                        ...sectionTitle,
+                        fontSize:isMobile ? "22px" : "28px"
+                    }}
+                >
+                    Top Performers
+                </h2>
 
-                    <h2 style={sectionTitle}>
+                {
+
+                    [
+
+                        {name:"Class 10-A",percent:"98%"},
+
+                        {name:"Class 08-C",percent:"94%"},
+
+                        {name:"Class 12-B",percent:"91%"}
+
+                    ].map((item,index)=>(
+
+                        <div
+                            key={index}
+                            style={{marginBottom:"25px"}}
+                        >
+
+                            <div style={performerTop}>
+
+                                <div
+                                    style={{
+                                        ...circleAvatar,
+                                        width:isMobile ? "38px" : "45px",
+                                        height:isMobile ? "38px" : "45px"
+                                    }}
+                                >
+                                    {String.fromCharCode(65+index)}
+                                </div>
+
+                                <div style={{flex:1}}>
+
+                                    <div style={performerRow}>
+
+                            <span
+                                style={{
+                                    fontSize:isMobile ? "13px" : "15px"
+                                }}
+                            >
+                                {item.name}
+                            </span>
+
+                                        <span
+                                            style={{
+                                                fontSize:isMobile ? "13px" : "15px"
+                                            }}
+                                        >
+                                {item.percent}
+                            </span>
+
+                                    </div>
+
+                                    <div style={progressBg}>
+
+                                        <div
+                                            style={{
+                                                ...progressFill,
+                                                width:item.percent
+                                            }}
+                                        />
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    ))
+
+                }
+
+                <button
+                    style={{
+                        ...viewButton,
+                        fontSize:isMobile ? "14px" : "16px"
+                    }}
+                >
+                    View All Classes
+                </button>
+
+            </div>
+            {/* ==================== RECENT ATTENDANCE ==================== */}
+
+            <div
+                style={{
+                    ...tableCard,
+                    padding: isMobile ? "18px" : "25px"
+                }}
+            >
+
+                <div
+                    style={{
+                        ...sectionHeader,
+                        flexDirection: isMobile ? "column" : "row",
+                        alignItems: isMobile ? "flex-start" : "center",
+                        gap: isMobile ? "12px" : "0"
+                    }}
+                >
+
+                    <h2
+                        style={{
+                            ...sectionTitle,
+                            fontSize: isMobile ? "22px" : "28px"
+                        }}
+                    >
                         Recent Attendance
                     </h2>
 
-                    <div style={{display:"flex",gap:"15px"}}>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "15px"
+                        }}
+                    >
                         <Filter size={20} color="#374151" />
                         <MoreVertical size={20} color="#374151" />
                     </div>
 
                 </div>
 
-                <div style={{overflowX:"auto"}}>
+                <div
+                    style={{
+                        width: "100%",
+                        overflowX: "auto"
+                    }}
+                >
 
-                    <table style={tableStyle}>
+                    <table
+                        style={{
+                            ...tableStyle,
+                            minWidth: isMobile ? "650px" : "700px"
+                        }}
+                    >
 
                         <thead>
 
@@ -333,7 +569,7 @@ function Dashboard() {
                             <th style={thStyle}>CLASS</th>
                             <th style={thStyle}>TIME</th>
                             <th style={thStyle}>STATUS</th>
-                            <th style={thStyle}>ACTIONS</th>
+                            <th style={thStyle}>ACTION</th>
 
                         </tr>
 
@@ -342,15 +578,33 @@ function Dashboard() {
                         <tbody>
 
                         {
+
                             recentAttendance.map((item,index)=>(
+
                                 <tr key={index}>
 
                                     <td style={tdStyle}>
 
                                         <div style={studentCell}>
 
-                                            <div style={avatarCircle}>
+                                            <div
+
+                                                style={{
+
+                                                    ...avatarCircle,
+
+                                                    width:isMobile ? "34px":"38px",
+
+                                                    height:isMobile ? "34px":"38px",
+
+                                                    fontSize:isMobile ? "12px":"14px"
+
+                                                }}
+
+                                            >
+
                                                 {item.initials}
+
                                             </div>
 
                                             {item.name}
@@ -367,38 +621,70 @@ function Dashboard() {
 
                                     <td style={tdStyle}>
 
-                                        <span style={{
-                                            ...statusBadge,
-                                            backgroundColor:
-                                                item.status === "PRESENT"
-                                                    ? "#dcfce7"
-                                                    : item.status === "ABSENT"
-                                                        ? "#fee2e2"
-                                                        : "#fef3c7",
+                            <span
 
-                                            color:
-                                                item.status === "PRESENT"
-                                                    ? "#166534"
-                                                    : item.status === "ABSENT"
-                                                        ? "#b91c1c"
-                                                        : "#92400e"
-                                        }}>
-                                            {item.status}
-                                        </span>
+                                style={{
+
+                                    ...statusBadge,
+
+                                    backgroundColor:
+
+                                        item.status==="PRESENT"
+
+                                            ? "#dcfce7"
+
+                                            : item.status==="ABSENT"
+
+                                                ? "#fee2e2"
+
+                                                : "#fef3c7",
+
+                                    color:
+
+                                        item.status==="PRESENT"
+
+                                            ? "#166534"
+
+                                            : item.status==="ABSENT"
+
+                                                ? "#b91c1c"
+
+                                                : "#92400e"
+
+                                }}
+
+                            >
+
+                                {item.status}
+
+                            </span>
 
                                     </td>
 
-                                    <td style={{
-                                        ...tdStyle,
-                                        color:"#2563eb",
-                                        fontWeight:"600",
-                                        cursor:"pointer"
-                                    }}>
+                                    <td
+
+                                        style={{
+
+                                            ...tdStyle,
+
+                                            color:"#2563eb",
+
+                                            cursor:"pointer",
+
+                                            fontWeight:"600"
+
+                                        }}
+
+                                    >
+
                                         Details
+
                                     </td>
 
                                 </tr>
+
                             ))
+
                         }
 
                         </tbody>
@@ -410,54 +696,54 @@ function Dashboard() {
             </div>
 
         </div>
+
     );
+
 }
-
-/* MAIN */
+// const mainContainer = {
+//     width: window.innerWidth <= 768 ? "100%" : "calc(100% - 260px)",
+//     marginLeft: window.innerWidth <= 768 ? "0" : "260px",
+//     minHeight: "100vh",
+//     backgroundColor: "#f5f7fb",
+//     padding: window.innerWidth <= 768 ? "15px" : "20px",
+//     boxSizing: "border-box",
+//     overflowX: "hidden",
+//     transition: "all .3s ease"
+// };
+//
 const mainContainer = {
-
-    width: "calc(100% - 260px)",
-
-    marginLeft: "260px",
-
     minHeight: "100vh",
-
-    backgroundColor: "#f5f7fb",
-
-    padding: "20px",
-
+    background: "#f5f7fb",
     boxSizing: "border-box",
-
-    overflowX: "hidden"
+    overflowX: "hidden",
+    transition: ".3s"
 };
-
-/* HEADER */
 const headerStyle = {
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     gap: "20px",
-    marginBottom: "30px",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    marginBottom: "30px"
 };
 
 const searchStyle = {
     flex: 1,
     minWidth: "220px",
-    maxWidth: "420px",
     padding: "12px 18px",
     borderRadius: "10px",
     border: "1px solid #d1d5db",
     outline: "none",
+    background: "#fff",
     fontSize: "15px",
-    backgroundColor: "white"
+    boxSizing: "border-box"
 };
 
 const headerRight = {
     display: "flex",
     alignItems: "center",
-    gap: "20px",
+    gap: "18px",
     flexWrap: "wrap"
 };
 
@@ -470,39 +756,31 @@ const profileStyle = {
 const profileImg = {
     width: "45px",
     height: "45px",
-    borderRadius: "50%",
-    objectFit: "cover"
+    borderRadius: "50%"
 };
-
-/* TITLE */
 const titleStyle = {
     margin: 0,
-    fontSize: "36px",
     fontWeight: "700",
     color: "#111827"
 };
 
 const subTitle = {
     marginTop: "8px",
-    fontSize: "16px",
     color: "#6b7280"
 };
-
-/* CARDS */
 const cardContainer = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
     gap: "20px",
-    width: "100%",
     marginBottom: "25px"
 };
 
 const cardStyle = {
-    backgroundColor: "white",
+    background: "#fff",
     borderRadius: "18px",
     padding: "22px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-    border: "1px solid #e5e7eb"
+    border: "1px solid #e5e7eb",
+    boxShadow: "0 2px 10px rgba(0,0,0,.06)"
 };
 
 const cardTop = {
@@ -515,7 +793,7 @@ const cardTop = {
 const iconBox = {
     width: "52px",
     height: "52px",
-    backgroundColor: "#eff6ff",
+    background: "#eff6ff",
     borderRadius: "14px",
     display: "flex",
     justifyContent: "center",
@@ -525,35 +803,31 @@ const iconBox = {
 const cardTitle = {
     fontSize: "14px",
     color: "#6b7280",
-    fontWeight: "600",
     marginBottom: "10px",
-    letterSpacing: "1px"
+    fontWeight: "600"
 };
 
 const cardValue = {
     margin: 0,
-    fontSize: "40px",
     fontWeight: "700",
     color: "#111827"
 };
-
-/* MIDDLE */
 const middleContainer = {
     display: "grid",
-    gridTemplateColumns: "2fr 1fr",
+    gridTemplateColumns: window.innerWidth <= 768 ? "1fr" : "2fr 1fr",
     gap: "20px",
     marginBottom: "25px"
 };
 
 const chartCard = {
-    backgroundColor: "white",
+    background: "#fff",
     borderRadius: "18px",
     padding: "25px",
     border: "1px solid #e5e7eb"
 };
 
 const performerCard = {
-    backgroundColor: "white",
+    background: "#fff",
     borderRadius: "18px",
     padding: "25px",
     border: "1px solid #e5e7eb"
@@ -568,64 +842,58 @@ const sectionHeader = {
 
 const sectionTitle = {
     margin: 0,
-    fontSize: "28px",
-    fontWeight: "700",
-    color: "#111827"
+    fontWeight: "700"
 };
 
 const smallButton = {
     padding: "8px 14px",
     borderRadius: "10px",
     border: "none",
-    backgroundColor: "#f3f4f6",
-    cursor: "pointer"
+    cursor: "pointer",
+    background: "#f3f4f6"
 };
-
 const chartArea = {
     height: "300px",
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    gap: "14px",
-    backgroundColor: "#f9fafb",
+    background: "#f9fafb",
     borderRadius: "14px",
-    padding: "20px"
+    padding: "20px",
+    gap: "14px"
 };
 
 const barWrapper = {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     justifyContent: "flex-end",
+    alignItems: "center",
     height: "100%"
 };
 
 const barStyle = {
     width: "100%",
     maxWidth: "40px",
-    backgroundColor: "#2563eb",
+    background: "#2563eb",
     borderRadius: "10px 10px 0 0"
 };
 
 const barLabel = {
     marginTop: "10px",
-    fontSize: "13px",
     fontWeight: "600"
 };
-
-/* PERFORMER */
 const performerTop = {
     display: "flex",
-    alignItems: "center",
-    gap: "15px"
+    gap: "15px",
+    alignItems: "center"
 };
 
 const circleAvatar = {
     width: "45px",
     height: "45px",
     borderRadius: "50%",
-    backgroundColor: "#dbeafe",
+    background: "#dbeafe",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -642,13 +910,13 @@ const performerRow = {
 const progressBg = {
     width: "100%",
     height: "8px",
-    backgroundColor: "#e5e7eb",
+    background: "#e5e7eb",
     borderRadius: "10px"
 };
 
 const progressFill = {
     height: "100%",
-    backgroundColor: "#2563eb",
+    background: "#2563eb",
     borderRadius: "10px"
 };
 
@@ -657,24 +925,23 @@ const viewButton = {
     padding: "12px",
     borderRadius: "12px",
     border: "1px solid #2563eb",
-    backgroundColor: "white",
+    background: "#fff",
     color: "#2563eb",
     fontWeight: "600",
     cursor: "pointer"
 };
-
-/* TABLE */
 const tableCard = {
-    backgroundColor: "white",
+    background: "#fff",
     borderRadius: "18px",
     padding: "25px",
-    border: "1px solid #e5e7eb"
+    border: "1px solid #e5e7eb",
+    overflow: "hidden"
 };
 
 const tableStyle = {
     width: "100%",
-    borderCollapse: "collapse",
-    minWidth: "700px"
+    minWidth: "700px",
+    borderCollapse: "collapse"
 };
 
 const thStyle = {
@@ -702,19 +969,19 @@ const avatarCircle = {
     width: "38px",
     height: "38px",
     borderRadius: "50%",
-    backgroundColor: "#dbeafe",
+    background: "#dbeafe",
+    color: "#2563eb",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontWeight: "700",
-    color: "#2563eb"
+    fontWeight: "700"
 };
 
 const statusBadge = {
     padding: "6px 12px",
     borderRadius: "20px",
-    fontSize: "12px",
-    fontWeight: "700"
+    fontWeight: "700",
+    fontSize: "12px"
 };
 
 export default Dashboard;
